@@ -275,9 +275,12 @@ a:hover {
   color: var(--muted);
 }
 
-.page-hero,
-.post {
+.page-hero {
   max-width: 820px;
+}
+
+.post {
+  max-width: 960px;
 }
 
 .page-hero {
