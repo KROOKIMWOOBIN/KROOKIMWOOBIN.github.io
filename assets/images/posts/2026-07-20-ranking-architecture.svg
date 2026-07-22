@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">상품 랭킹 조회 아키텍처</title>
+  <desc id="desc">일간 랭킹은 Redis에서 조회하고, 주간 월간 랭킹은 product_metrics를 배치로 집계한 조회 전용 테이블에서 조회하는 구조</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#334155" />
+    </marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.12" />
+    </filter>
+  </defs>
+
+  <rect width="1200" height="720" fill="#f8fafc" />
+  <text x="60" y="58" fill="#111827" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="30" font-weight="700">상품 랭킹 조회 아키텍처</text>
+  <text x="60" y="91" fill="#64748b" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="16">일간은 실시간 저장소, 주간/월간은 배치가 만든 조회 전용 테이블로 분리한다</text>
+
+  <rect x="60" y="132" width="230" height="108" rx="12" fill="#ffffff" stroke="#cbd5e1" filter="url(#shadow)" />
+  <text x="86" y="168" fill="#0f172a" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="18" font-weight="700">사용자 행동 이벤트</text>
+  <text x="86" y="198" fill="#475569" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="15">조회, 좋아요, 주문</text>
+  <text x="86" y="221" fill="#475569" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="15">랭킹 점수에 반영</text>
+
+  <rect x="370" y="132" width="230" height="108" rx="12" fill="#ecfeff" stroke="#67e8f9" filter="url(#shadow)" />
+  <text x="396" y="168" fill="#155e75" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="18" font-weight="700">Redis ZSET</text>
+  <text x="396" y="198" fill="#0e7490" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="15">일간 실시간 랭킹</text>
+  <text x="396" y="221" fill="#0e7490" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="15">오늘 점수 즉시 반영</text>
+
+  <rect x="60" y="328" width="230" height="108" rx="12" fill="#ffffff" stroke="#cbd5e1" filter="url(#shadow)" />
+  <text x="86" y="364" fill="#0f172a" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="18" font-weight="700">일간 상품 지표</text>
+  <text x="86" y="394" fill="#475569" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="15">product_metrics</text>
+  <text x="86" y="417" fill="#475569" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="15">날짜별 상품 지표 저장</text>
+
+  <rect x="370" y="328" width="230" height="108" rx="12" fill="#fff7ed" stroke="#fdba74" filter="url(#shadow)" />
+  <text x="396" y="364" fill="#9a3412" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="18" font-weight="700">랭킹 배치 집계</text>
+  <text x="396" y="394" fill="#c2410c" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="15">기간 계산</text>
+  <text x="396" y="417" fill="#c2410c" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="15">삭제 후 상위 100개 재적재</text>
+
+  <rect x="690" y="290" width="250" height="82" rx="12" fill="#f0fdf4" stroke="#86efac" filter="url(#shadow)" />
+  <text x="716" y="324" fill="#166534" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="18" font-weight="700">주간 조회 전용 테이블</text>
+  <text x="716" y="352" fill="#15803d" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="15">mv_product_rank_weekly</text>
+
+  <rect x="690" y="406" width="250" height="82" rx="12" fill="#fefce8" stroke="#fde047" filter="url(#shadow)" />
+  <text x="716" y="440" fill="#854d0e" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="18" font-weight="700">월간 조회 전용 테이블</text>
+  <text x="716" y="468" fill="#a16207" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="15">mv_product_rank_monthly</text>
+
+  <rect x="760" y="132" width="260" height="108" rx="12" fill="#eef2ff" stroke="#a5b4fc" filter="url(#shadow)" />
+  <text x="786" y="168" fill="#3730a3" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="18" font-weight="700">랭킹 조회 API</text>
+  <text x="786" y="198" fill="#4338ca" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="15">period 값으로 조회 원천 분기</text>
+  <text x="786" y="221" fill="#4338ca" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="15">일간 / 주간 / 월간</text>
+
+  <rect x="760" y="572" width="260" height="82" rx="12" fill="#ffffff" stroke="#cbd5e1" filter="url(#shadow)" />
+  <text x="786" y="606" fill="#0f172a" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="18" font-weight="700">랭킹 응답</text>
+  <text x="786" y="634" fill="#475569" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="15">상품 정보와 순위 반환</text>
+
+  <line x1="290" y1="186" x2="370" y2="186" stroke="#334155" stroke-width="2.4" marker-end="url(#arrow)" />
+  <text x="310" y="174" fill="#64748b" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="13">실시간 반영</text>
+
+  <line x1="290" y1="382" x2="370" y2="382" stroke="#334155" stroke-width="2.4" marker-end="url(#arrow)" />
+  <text x="310" y="370" fill="#64748b" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="13">기간 집계</text>
+
+  <path d="M600 368 C635 346, 650 331, 690 331" fill="none" stroke="#334155" stroke-width="2.4" marker-end="url(#arrow)" />
+  <text x="616" y="335" fill="#64748b" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="13">주간</text>
+
+  <path d="M600 402 C635 424, 650 447, 690 447" fill="none" stroke="#334155" stroke-width="2.4" marker-end="url(#arrow)" />
+  <text x="616" y="449" fill="#64748b" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="13">월간</text>
+
+  <path d="M760 172 C700 150, 655 150, 600 172" fill="none" stroke="#334155" stroke-width="2.4" marker-end="url(#arrow)" />
+  <text x="646" y="137" fill="#64748b" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="13">일간 조회</text>
+
+  <path d="M890 240 C890 264, 870 274, 858 290" fill="none" stroke="#334155" stroke-width="2.4" marker-end="url(#arrow)" />
+  <text x="902" y="274" fill="#64748b" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="13">주간 조회</text>
+
+  <path d="M910 240 C958 302, 958 388, 940 428" fill="none" stroke="#334155" stroke-width="2.4" marker-end="url(#arrow)" />
+  <text x="965" y="344" fill="#64748b" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="13">월간 조회</text>
+
+  <path d="M890 488 C890 520, 890 540, 890 572" fill="none" stroke="#334155" stroke-width="2.4" marker-end="url(#arrow)" />
+  <path d="M840 372 C820 462, 830 528, 858 572" fill="none" stroke="#334155" stroke-width="2.4" marker-end="url(#arrow)" />
+  <path d="M520 240 C564 444, 680 566, 760 606" fill="none" stroke="#334155" stroke-width="2.4" marker-end="url(#arrow)" />
+
+  <rect x="60" y="548" width="540" height="74" rx="12" fill="#ffffff" stroke="#cbd5e1" />
+  <text x="86" y="579" fill="#0f172a" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="16" font-weight="700">설계 기준</text>
+  <text x="86" y="606" fill="#475569" font-family="Arial, 'Noto Sans KR', sans-serif" font-size="15">요청 때마다 계산하지 않고, 조회 목적에 맞는 저장 원천을 분리한다</text>
+</svg>
